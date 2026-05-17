@@ -1,0 +1,6 @@
+@emigest_back_HostAddress = http://localhost:5222
+
+GET {{emigest_back_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

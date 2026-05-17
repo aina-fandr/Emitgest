@@ -1,0 +1,79 @@
+{
+  "format": 1,
+  "restore": {
+    "/media/neva/5a878616-283e-4dac-960e-511f9f7e9767/EMIT-GEST/emigest-back/emigest-back.csproj": {}
+  },
+  "projects": {
+    "/media/neva/5a878616-283e-4dac-960e-511f9f7e9767/EMIT-GEST/emigest-back/emigest-back.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/media/neva/5a878616-283e-4dac-960e-511f9f7e9767/EMIT-GEST/emigest-back/emigest-back.csproj",
+        "projectName": "emigest-back",
+        "projectPath": "/media/neva/5a878616-283e-4dac-960e-511f9f7e9767/EMIT-GEST/emigest-back/emigest-back.csproj",
+        "packagesPath": "/home/neva/.nuget/packages/",
+        "outputPath": "/media/neva/5a878616-283e-4dac-960e-511f9f7e9767/EMIT-GEST/emigest-back/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/home/neva/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        }
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "dependencies": {
+            "Microsoft.AspNetCore.OpenApi": {
+              "target": "Package",
+              "version": "[8.0.27, )"
+            },
+            "Swashbuckle.AspNetCore": {
+              "target": "Package",
+              "version": "[6.6.2, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.AspNetCore.App": {
+              "privateAssets": "none"
+            },
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/8.0.421/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}
