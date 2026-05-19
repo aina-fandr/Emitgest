@@ -1,0 +1,11 @@
+# Nettoyer et reconstruire
+dotnet clean && dotnet build
+
+# Vérifier que le DbContext est détecté
+dotnet ef dbcontext list
+
+# Créer la migration
+dotnet ef migrations add InitialCreate
+
+# Appliquer à la base PostgreSQL
+dotnet ef database update
