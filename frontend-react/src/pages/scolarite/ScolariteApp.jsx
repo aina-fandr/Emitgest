@@ -1,22 +1,18 @@
 import { useState } from 'react'
-import { GraduationCap, LayoutDashboard, DoorOpen, Calendar, ClipboardList, Users, ArrowLeft, LogOut } from 'lucide-react'
-import Home from '../Home'
-import Login from './Loginsco'
+import { GraduationCap, LayoutDashboard, DoorOpen, Calendar, ClipboardList, Users, ArrowLeft, LogOut, GitBranch } from 'lucide-react'
 import Dashboard from './Dashboard'
 import Parcours from './Parcours'
 import Rooms from './Rooms'
 import Schedule from './Schedule'
 import Requests from './Requests'
 import Professors from './Professors'
-import { getSuggestedQuery } from '@testing-library/dom'
 
-function App() {
-  const [currentView, setCurrentView] = useState('home')
+export default function ScolariteApp({ onBack }) {
   const [currentPage, setCurrentPage] = useState('dashboard')
 
   const menuItems = [
     { id: 'dashboard', label: 'Tableau de bord', icon: LayoutDashboard },
-    { id: 'parcours', label: 'Gestion des parcours', icon: getSuggestedQuery },
+    { id: 'parcours', label: 'Gestion des parcours et mentions', icon: GitBranch },
     { id: 'rooms', label: 'Gestion des salles', icon: DoorOpen },
     { id: 'schedule', label: 'Emploi du temps', icon: Calendar },
     { id: 'requests', label: 'Demandes', icon: ClipboardList },
@@ -35,31 +31,13 @@ function App() {
     }
   }
 
-  // Page d'accueil
-  if (currentView === 'home') {
-    return <Home onNavigate={(page) => {
-      if (page === 'dashboard') {
-        setCurrentView('Loginsco')
-      }
-    }} />
-  }
-
-  // Page de login
-  if (currentView === 'Loginsco') {
-    return <Login 
-      onBack={() => setCurrentView('home')} 
-      onLogin={() => setCurrentView('admin')} 
-    />
-  }
-
-  // Interface Admin
   return (
     <div className="flex h-screen overflow-hidden bg-slate-50">
       <aside className="w-64 bg-white border-r border-slate-200 flex flex-col h-full shrink-0">
         <div className="p-6 border-b border-slate-50">
           <div className="flex items-center gap-2 mb-1">
             <GraduationCap className="text-blue-600 w-6 h-6" />
-            <h1 className="text-xl font-bold text-slate-800">UniGest</h1>
+            <h1 className="text-xl font-bold text-slate-800">EmitGest</h1>
           </div>
           <p className="text-[10px] font-bold text-blue-500 tracking-widest uppercase">Espace Scolarité</p>
         </div>
@@ -72,10 +50,10 @@ function App() {
           ))}
         </nav>
         <div className="p-4 border-t border-slate-100 space-y-2">
-          <button onClick={() => setCurrentView('home')} className="w-full flex items-center gap-3 px-4 py-2 text-sm text-slate-500 hover:text-slate-800 transition-colors">
+          <button onClick={onBack} className="w-full flex items-center gap-3 px-4 py-2 text-sm text-slate-500 hover:text-slate-800 transition-colors">
             <ArrowLeft className="w-4 h-4" /> Accueil
           </button>
-          <button onClick={() => setCurrentView('home')} className="w-full flex items-center gap-3 px-4 py-2 text-sm text-slate-500 hover:text-red-600 transition-colors">
+          <button onClick={onBack} className="w-full flex items-center gap-3 px-4 py-2 text-sm text-slate-500 hover:text-red-600 transition-colors">
             <LogOut className="w-4 h-4" /> Déconnexion
           </button>
         </div>
@@ -84,5 +62,3 @@ function App() {
     </div>
   )
 }
-
-export default App

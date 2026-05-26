@@ -16,7 +16,7 @@ export default function Home({ onNavigate }) {
       <div className="text-center mb-12">
         <div className="flex items-center justify-center gap-3 mb-4">
           <GraduationCap className="w-12 h-12 text-blue-400" />
-          <h1 className="text-5xl font-bold tracking-tight">UniGest</h1>
+          <h1 className="text-5xl font-bold tracking-tight">EmitGest</h1>
         </div>
         <h2 className="text-xl font-light text-blue-100 opacity-90">Système de Gestion des Salles et Emplois du Temps</h2>
         <p className="text-sm text-blue-200/60 mt-2">Choisissez votre espace pour accéder aux services</p>
@@ -51,7 +51,7 @@ export default function Home({ onNavigate }) {
             Créez votre compte, soumettez vos disponibilités et contraintes.
           </p>
           <button 
-            onClick={() => onNavigate('professeur')}
+            onClick={() => onNavigate('loginprof')}
             className="w-full bg-indigo-600 hover:bg-indigo-500 text-white py-3 rounded-xl font-medium flex items-center justify-center gap-2 transition-colors"
           >
             <GradIcon className="w-4 h-4" /> Accéder
