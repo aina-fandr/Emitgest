@@ -1,52 +1,73 @@
-import { useState } from 'react'
-import { Plus, Search, Edit3, Trash2, X, GraduationCap, Building, Phone, Mail, Hash } from 'lucide-react'
+import { useState, useEffect } from 'react'
+import { Plus, Search, Edit3, Trash2, X, GraduationCap, Building, Phone } from 'lucide-react'
+import ApiService from '../../services/apiService'
 
 export default function Parcours() {
   const [showModal, setShowModal] = useState(false)
   const [searchTerm, setSearchTerm] = useState('')
-  const [parcours, setParcours] = useState([
-    {
-      id: 1,
-      mention: 'Informatique',
-      parcours: 'Génie Logiciel',
-      niveau: 'L3',
-      delegue: 'Rakoto Jean',
-      whatsapp: '+261 34 12 345 67',
-      mail: 'rakoto.jean@unigest.mg',
-      salle: 'Salle C101'
-    },
-    {
-      id: 2,
-      mention: 'Mathématiques',
-      parcours: 'Maths Appliquées',
-      niveau: 'M1',
-      delegue: 'Rabe Marie',
-      whatsapp: '+261 33 98 765 43',
-      mail: 'rabe.marie@unigest.mg',
-      salle: 'Salle B202'
-    },
-    {
-      id: 3,
-      mention: 'Physique',
-      parcours: 'Physique Nucléaire',
-      niveau: 'L2',
-      delegue: 'Randria Paul',
-      whatsapp: '+261 32 11 222 33',
-      mail: 'randria.paul@unigest.mg',
-      salle: 'Labo D'
-    },
-  ])
+  const [parcours, setParcours] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
+  const [editingId, setEditingId] = useState(null)
+  const [notification, setNotification] = useState(null)
 
   // États du formulaire
   const [form, setForm] = useState({
     mention: '',
     parcours: '',
     niveau: '',
-    delegue: '',
-    whatsapp: '',
-    mail: '',
-    salle: ''
+    nomDelegue: '',
+    numDelegue: '',
+    salleClasse: ''
   })
+
+  // Charger les classes au montage
+  useEffect(() => {
+    fetchClasses()
+  }, [])
+
+  // Récupérer toutes les classes
+  const fetchClasses = async () => {
+    try {
+      setLoading(true)
+      const data = await ApiService.getAllClasses()
+      setParcours(data)
+      setError(null)
+    } catch (err) {
+      console.error('Erreur lors du chargement des classes:', err)
+      setError('Erreur lors du chargement des classes')
+      showNotification('Erreur: ' + err.message, 'error')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  // Afficher notification
+  const showNotification = (message, type) => {
+    setNotification({ message, type })
+    setTimeout(() => setNotification(null), 3000)
+  }
+
+  // Ouvrir modal pour ajouter
+  const handleAddClick = () => {
+    setEditingId(null)
+    setForm({ mention: '', parcours: '', niveau: '', nomDelegue: '', numDelegue: '', salleClasse: '' })
+    setShowModal(true)
+  }
+
+  // Ouvrir modal pour modifier
+  const handleEditClick = (item) => {
+    setEditingId(item.id)
+    setForm({
+      mention: item.mention,
+      parcours: item.parcours,
+      niveau: item.niveau,
+      nomDelegue: item.nomDelegue,
+      numDelegue: item.numDelegue,
+      salleClasse: item.salleClasse
+    })
+    setShowModal(true)
+  }
 
   const niveaux = ['L1', 'L2', 'L3', 'M1', 'M2', 'Doctorat']
 
@@ -55,40 +76,73 @@ export default function Parcours() {
     p.mention.toLowerCase().includes(searchTerm.toLowerCase()) ||
     p.parcours.toLowerCase().includes(searchTerm.toLowerCase()) ||
     p.niveau.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    p.delegue.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    p.salle.toLowerCase().includes(searchTerm.toLowerCase())
+    p.nomDelegue.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    p.salleClasse.toLowerCase().includes(searchTerm.toLowerCase())
   )
 
-  const handleSubmit = (e) => {
+  // Soumettre le formulaire
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    const newParcours = {
-      id: Date.now(),
-      ...form
+    
+    // Validation
+    if (!form.mention.trim() || !form.parcours.trim() || !form.niveau.trim() || !form.nomDelegue.trim() || !form.numDelegue.trim() || !form.salleClasse.trim()) {
+      showNotification('Veuillez remplir tous les champs requis', 'error')
+      return
     }
-    setParcours([...parcours, newParcours])
-    setForm({ mention: '', parcours: '', niveau: '', delegue: '', whatsapp: '', mail: '', salle: '' })
-    setShowModal(false)
+
+    try {
+      if (editingId) {
+        // Modifier une classe
+        await ApiService.updateClass(editingId, form)
+        showNotification('Classe modifiée avec succès', 'success')
+      } else {
+        // Créer une nouvelle classe
+        await ApiService.createClass(form)
+        showNotification('Classe créée avec succès', 'success')
+      }
+      setShowModal(false)
+      fetchClasses()
+    } catch (err) {
+      console.error('Erreur:', err)
+      showNotification('Erreur: ' + err.message, 'error')
+    }
   }
 
-  const handleDelete = (id) => {
-    if (window.confirm('Voulez-vous vraiment supprimer ce parcours ?')) {
-      setParcours(parcours.filter(p => p.id !== id))
+  // Supprimer une classe
+  const handleDelete = async (id) => {
+    if (!window.confirm('Êtes-vous sûr de vouloir supprimer cette classe?')) {
+      return
+    }
+
+    try {
+      await ApiService.deleteClass(id)
+      showNotification('Classe supprimée avec succès', 'success')
+      fetchClasses()
+    } catch (err) {
+      console.error('Erreur:', err)
+      showNotification('Erreur: ' + err.message, 'error')
     }
   }
 
   return (
     <div className="space-y-8">
+      {notification && (
+        <div className={`fixed top-4 right-4 z-50 px-6 py-3 rounded-xl shadow-lg text-white text-sm font-medium ${notification.type === 'success' ? 'bg-emerald-500' : 'bg-red-500'}`}>
+          {notification.message}
+        </div>
+      )}
+
       {/* En-tête */}
       <div className="flex justify-between items-center">
         <div>
-          <h2 className="text-2xl font-bold text-slate-900">Gestion des Parcours</h2>
+          <h2 className="text-2xl font-bold text-slate-900">Gestion des Classes</h2>
           <p className="text-slate-500 text-sm">Gérez les parcours, mentions et délégués</p>
         </div>
         <button
-          onClick={() => setShowModal(true)}
+          onClick={handleAddClick}
           className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 text-sm font-medium shadow-lg shadow-blue-100 transition-all"
         >
-          <Plus className="w-4 h-4" /> Ajouter un parcours
+          <Plus className="w-4 h-4" /> Ajouter une classe
         </button>
       </div>
 
@@ -104,20 +158,34 @@ export default function Parcours() {
         />
       </div>
 
-      {/* Stats rapides */}
-      <div className="grid grid-cols-4 gap-4">
-        {niveaux.slice(0, 4).map(niveau => (
-          <div key={niveau} className="bg-white p-4 rounded-xl border border-slate-200">
-            <p className="text-xs text-slate-500">{niveau}</p>
-            <p className="text-2xl font-bold text-slate-800">
-              {parcours.filter(p => p.niveau === niveau).length}
-            </p>
-            <p className="text-[10px] text-slate-400">parcours</p>
-          </div>
-        ))}
-      </div>
+      {loading && (
+        <div className="flex justify-center items-center py-12">
+          <div className="text-slate-500">Chargement des classes...</div>
+        </div>
+      )}
 
-      {/* Liste des parcours */}
+      {error && (
+        <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-red-700 text-sm">
+          {error}
+        </div>
+      )}
+
+      {/* Stats rapides */}
+      {!loading && (
+        <div className="grid grid-cols-4 gap-4">
+          {niveaux.slice(0, 4).map(niveau => (
+            <div key={niveau} className="bg-white p-4 rounded-xl border border-slate-200">
+              <p className="text-xs text-slate-500">{niveau}</p>
+              <p className="text-2xl font-bold text-slate-800">
+                {parcours.filter(p => p.niveau === niveau).length}
+              </p>
+              <p className="text-[10px] text-slate-400">classes</p>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Liste des classes */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredParcours.map(p => (
           <div key={p.id} className="bg-white p-6 rounded-2xl border border-slate-200 hover:border-blue-200 hover:shadow-md transition-all space-y-4">
@@ -140,26 +208,25 @@ export default function Parcours() {
             {/* Info délégué */}
             <div className="bg-slate-50 rounded-xl p-3 space-y-2">
               <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Délégué</p>
-              <p className="text-sm font-semibold text-slate-700">{p.delegue}</p>
+              <p className="text-sm font-semibold text-slate-700">{p.nomDelegue}</p>
               <div className="flex items-center gap-2 text-[11px] text-slate-500">
                 <Phone className="w-3 h-3" />
-                <span>{p.whatsapp}</span>
-              </div>
-              <div className="flex items-center gap-2 text-[11px] text-slate-500">
-                <Mail className="w-3 h-3" />
-                <span>{p.mail}</span>
+                <span>{p.numDelegue}</span>
               </div>
             </div>
 
             {/* Salle */}
             <div className="flex items-center gap-2 text-xs text-slate-500">
               <Building className="w-3 h-3" />
-              <span>{p.salle}</span>
+              <span>{p.salleClasse}</span>
             </div>
 
             {/* Actions */}
             <div className="flex gap-2 pt-2 border-t border-slate-50">
-              <button className="flex-1 py-2 text-[11px] font-bold text-slate-600 bg-slate-50 rounded-lg hover:bg-slate-100 flex items-center justify-center gap-1 transition-colors">
+              <button
+                onClick={() => handleEditClick(p)}
+                className="flex-1 py-2 text-[11px] font-bold text-slate-600 bg-slate-50 rounded-lg hover:bg-slate-100 flex items-center justify-center gap-1 transition-colors"
+              >
                 <Edit3 className="w-3 h-3" /> Modifier
               </button>
               <button
@@ -174,14 +241,14 @@ export default function Parcours() {
       </div>
 
       {/* Message si aucun résultat */}
-      {filteredParcours.length === 0 && (
+      {!loading && filteredParcours.length === 0 && (
         <div className="text-center py-12 bg-white rounded-2xl border border-slate-200">
           <GraduationCap className="w-12 h-12 text-slate-300 mx-auto mb-4" />
-          <p className="text-slate-500">Aucun parcours trouvé</p>
+          <p className="text-slate-500">Aucune classe trouvée</p>
         </div>
       )}
 
-      {/* Modal Ajouter */}
+      {/* Modal Ajouter/Modifier */}
       {showModal && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 backdrop-blur-sm"
@@ -193,8 +260,10 @@ export default function Parcours() {
           >
             <div className="flex justify-between items-center mb-6">
               <div>
-                <h3 className="text-xl font-bold text-slate-800">Ajouter un parcours</h3>
-                <p className="text-sm text-slate-500">Remplissez les informations du parcours</p>
+                <h3 className="text-xl font-bold text-slate-800">
+                  {editingId ? 'Modifier la classe' : 'Ajouter une classe'}
+                </h3>
+                <p className="text-sm text-slate-500">Remplissez les informations de la classe</p>
               </div>
               <button
                 onClick={() => setShowModal(false)}
@@ -208,7 +277,7 @@ export default function Parcours() {
               {/* Mention et Parcours */}
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-bold text-slate-500 uppercase mb-1">Mention</label>
+                  <label className="block text-xs font-bold text-slate-500 uppercase mb-1">Mention *</label>
                   <input
                     type="text"
                     required
@@ -219,7 +288,7 @@ export default function Parcours() {
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-slate-500 uppercase mb-1">Parcours</label>
+                  <label className="block text-xs font-bold text-slate-500 uppercase mb-1">Parcours *</label>
                   <input
                     type="text"
                     required
@@ -234,7 +303,7 @@ export default function Parcours() {
               {/* Niveau et Salle */}
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-bold text-slate-500 uppercase mb-1">Niveau</label>
+                  <label className="block text-xs font-bold text-slate-500 uppercase mb-1">Niveau *</label>
                   <select
                     required
                     value={form.niveau}
@@ -248,12 +317,12 @@ export default function Parcours() {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-slate-500 uppercase mb-1">Salle attribuée</label>
+                  <label className="block text-xs font-bold text-slate-500 uppercase mb-1">Salle attribuée *</label>
                   <input
                     type="text"
                     required
-                    value={form.salle}
-                    onChange={(e) => setForm({ ...form, salle: e.target.value })}
+                    value={form.salleClasse}
+                    onChange={(e) => setForm({ ...form, salleClasse: e.target.value })}
                     className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 outline-none focus:ring-2 focus:ring-blue-500 text-sm"
                     placeholder="Ex: Salle C101"
                   />
@@ -265,44 +334,29 @@ export default function Parcours() {
                 <p className="text-xs font-bold text-slate-500 uppercase">Informations du Délégué</p>
                 
                 <div>
-                  <label className="block text-xs font-bold text-slate-500 uppercase mb-1">Nom complet</label>
+                  <label className="block text-xs font-bold text-slate-500 uppercase mb-1">Nom complet *</label>
                   <input
                     type="text"
                     required
-                    value={form.delegue}
-                    onChange={(e) => setForm({ ...form, delegue: e.target.value })}
+                    value={form.nomDelegue}
+                    onChange={(e) => setForm({ ...form, nomDelegue: e.target.value })}
                     className="w-full bg-white border border-slate-200 rounded-xl p-3 outline-none focus:ring-2 focus:ring-blue-500 text-sm"
                     placeholder="Ex: Rakoto Jean"
                   />
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-xs font-bold text-slate-500 uppercase mb-1">
-                      <span className="flex items-center gap-1"><Phone className="w-3 h-3" /> WhatsApp</span>
-                    </label>
-                    <input
-                      type="text"
-                      required
-                      value={form.whatsapp}
-                      onChange={(e) => setForm({ ...form, whatsapp: e.target.value })}
-                      className="w-full bg-white border border-slate-200 rounded-xl p-3 outline-none focus:ring-2 focus:ring-blue-500 text-sm"
-                      placeholder="+261 34 XX XXX XX"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-bold text-slate-500 uppercase mb-1">
-                      <span className="flex items-center gap-1"><Mail className="w-3 h-3" /> Email</span>
-                    </label>
-                    <input
-                      type="email"
-                      required
-                      value={form.mail}
-                      onChange={(e) => setForm({ ...form, mail: e.target.value })}
-                      className="w-full bg-white border border-slate-200 rounded-xl p-3 outline-none focus:ring-2 focus:ring-blue-500 text-sm"
-                      placeholder="prenom.nom@unigest.mg"
-                    />
-                  </div>
+                <div>
+                  <label className="block text-xs font-bold text-slate-500 uppercase mb-1">
+                    <span className="flex items-center gap-1"><Phone className="w-3 h-3" /> Téléphone *</span>
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={form.numDelegue}
+                    onChange={(e) => setForm({ ...form, numDelegue: e.target.value })}
+                    className="w-full bg-white border border-slate-200 rounded-xl p-3 outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                    placeholder="+261 34 XX XXX XX"
+                  />
                 </div>
               </div>
 
@@ -319,7 +373,7 @@ export default function Parcours() {
                   type="submit"
                   className="flex-1 py-3 text-sm font-bold text-white bg-blue-600 rounded-xl hover:bg-blue-700 transition-colors shadow-lg shadow-blue-100"
                 >
-                  Ajouter le parcours
+                  {editingId ? 'Mettre à jour' : 'Ajouter la classe'}
                 </button>
               </div>
             </form>

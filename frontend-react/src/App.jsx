@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Home from './pages/Home'
 import Loginsco from './pages/scolarite/Loginsco'
 import ScolariteApp from './pages/scolarite/ScolariteApp'
@@ -7,7 +7,16 @@ import ProfesseurApp from './pages/professeur/ProfesseurApp'
 import PublicApp from './pages/public/PublicApp'
 
 function App() {
-  const [currentView, setCurrentView] = useState('home')
+  // 1. On initialise le state avec la valeur stockée dans localStorage, 
+  //    sinon on met 'home' par défaut.
+  const [currentView, setCurrentView] = useState(() => {
+    return localStorage.getItem('emigest_view') || 'home'
+  })
+
+  // 2. À chaque fois que 'currentView' change, on met à jour le localStorage
+  useEffect(() => {
+    localStorage.setItem('emigest_view', currentView)
+  }, [currentView])
 
   const goHome = () => setCurrentView('home')
 
