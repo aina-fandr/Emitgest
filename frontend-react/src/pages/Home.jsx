@@ -78,7 +78,7 @@ export default function Home({ onNavigate }) {
       </div>
 
       <footer className="mt-16 text-blue-200/30 text-xs tracking-widest uppercase">
-        © 2026 UniGest - Université
+        © 2026 emitiGest - Université
       </footer>
 
       <style>{`

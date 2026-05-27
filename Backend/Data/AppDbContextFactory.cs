@@ -1,0 +1,30 @@
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Design;
+using Microsoft.Extensions.Configuration;
+using System.IO;
+
+namespace emigest_back.Data
+{
+    /// <summary>
+    /// Factory pour permettre à EF Core CLI de créer le DbContext au design-time avec PostgreSQL
+    /// </summary>
+    public class AppDbContextFactory : IDesignTimeDbContextFactory<AppDbContext>
+    {
+        public AppDbContext CreateDbContext(string[] args)
+        {
+            var configuration = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                .Build();
+
+            var optionsBuilder = new DbContextOptionsBuilder<AppDbContext>();
+            
+            optionsBuilder.UseNpgsql(
+                configuration.GetConnectionString("DefaultConnection"),
+                b => b.MigrationsAssembly("emigest-back")
+            );
+
+            return new AppDbContext(optionsBuilder.Options);
+        }
+    }
+}
