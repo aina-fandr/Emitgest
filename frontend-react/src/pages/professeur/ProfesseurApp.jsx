@@ -3,8 +3,8 @@ import { User, LogOut, Home, CheckCircle } from 'lucide-react';
 import InfosPr from './infospr';
 import Emploi from './emploi';
 
-const ProfesseurApp = () => {
-  const [activeTab, setActiveTab] = useState('infos');
+const ProfesseurApp = ({ onBack }) => {
+  const [activeTab, setActiveTab] = useState('login');
 
   return (
     <div className="min-h-screen bg-[#f8fafc] p-4 md:p-8 font-sans text-slate-900">
@@ -25,8 +25,18 @@ const ProfesseurApp = () => {
             <CheckCircle size={14} /> Vérifié
           </span>
           <nav className="flex items-center gap-4 text-sm font-medium text-slate-500">
-            <button className="flex items-center gap-1.5 hover:text-indigo-600 transition"><Home size={18} /> Accueil</button>
-            <button className="flex items-center gap-1.5 hover:text-red-500 transition"><LogOut size={18} /> Déconnexion</button>
+            <button 
+              onClick={onBack}
+              className="flex items-center gap-1.5 hover:text-indigo-600 transition"
+            >
+              <Home size={18} /> Accueil
+            </button>
+            <button 
+              onClick={onBack}
+              className="flex items-center gap-1.5 hover:text-red-500 transition"
+            >
+              <LogOut size={18} /> Déconnexion
+            </button>
           </nav>
         </div>
       </header>
@@ -52,13 +62,6 @@ const ProfesseurApp = () => {
         {activeTab === 'infos' ? <InfosPr /> : <Emploi />}
       </main>
 
-      {/* Badge de marque */}
-      <div className="fixed bottom-6 right-6 flex items-center gap-2 bg-slate-900 text-white px-4 py-2 rounded-full text-xs shadow-2xl">
-        <span className="opacity-70">Made by</span>
-        <span className="font-bold flex items-center gap-1.5">
-          <div className="w-2.5 h-2.5 bg-white rounded-full animate-pulse" /> Atoms
-        </span>
-      </div>
     </div>
   );
 };
