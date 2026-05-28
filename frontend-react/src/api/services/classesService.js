@@ -1,4 +1,4 @@
-import { API_ENDPOINTS, apiClient } from './config';
+import { API_ENDPOINTS, apiClient } from '../config';
 
 export const classesService = {
   // Get all classes

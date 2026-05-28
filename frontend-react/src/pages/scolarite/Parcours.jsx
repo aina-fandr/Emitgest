@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Plus, Search, Edit3, Trash2, X, GraduationCap, Building, Phone, Mail, Hash, Check, AlertCircle } from 'lucide-react'
+import { Plus, Search, Edit3, Trash2, X, GraduationCap, Building, Phone, Check, AlertCircle } from 'lucide-react'
 import { classesService } from '../../api/services/classesService'
 
 export default function Parcours() {

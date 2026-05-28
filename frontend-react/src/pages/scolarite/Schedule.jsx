@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Wand2, Search, ChevronDown, GraduationCap, Hash } from 'lucide-react'
+import { Wand2, Search, GraduationCap } from 'lucide-react'
 
 export default function Schedule() {
   // Données des mentions, niveaux et parcours
@@ -82,7 +82,7 @@ export default function Schedule() {
   ]
 
   // Emplois du temps par groupe
-  const [schedules, setSchedules] = useState({
+  const [schedules] = useState({
     'L1-G1': {
       mention: 'Informatique',
       niveau: 'L1',
