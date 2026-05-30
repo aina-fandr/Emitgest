@@ -10,20 +10,12 @@ export default function Loginprof({ onBack, onLogin }) {
   const [success, setSuccess] = useState('')
   const [fileName, setFileName] = useState('')
 
-  // Login
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
 
-  // Register
   const [form, setForm] = useState({
-    nom: '',
-    prenom: '',
-    email: '',
-    telephone: '',
-    specialite: '',
-    departement: '',
-    password: '',
-    confirmPassword: '',
+    nom: '', prenom: '', email: '', telephone: '',
+    specialite: '', departement: '', password: '', confirmPassword: '',
   })
 
   const handleFileChange = (e) => {
@@ -43,7 +35,6 @@ export default function Loginprof({ onBack, onLogin }) {
     e.preventDefault()
     setError('')
     setLoading(true)
-
     setTimeout(() => {
       if (email === 'prof@unigest.com' && password === 'prof123') {
         onLogin()
@@ -57,50 +48,38 @@ export default function Loginprof({ onBack, onLogin }) {
   const handleRegister = (e) => {
     e.preventDefault()
     setError('')
-
     if (form.password !== form.confirmPassword) {
       setError('Les mots de passe ne correspondent pas')
       return
     }
-
     if (!fileName) {
-      setError('Veuillez télécharger une pièce d\'identité')
+      setError("Veuillez télécharger une pièce d'identité")
       return
     }
-
     setLoading(true)
-
     setTimeout(() => {
-      setSuccess('Compte créé avec succès ! En attente de vérification.')
+      setSuccess('Demande soumise avec succès !')
       setLoading(false)
-      setTimeout(() => {
-        setIsRegistering(false)
-        setSuccess('')
-      }, 2000)
     }, 1000)
   }
 
   return (
     <div style={{
       fontFamily: "'Inter', sans-serif",
-       background: "radial-gradient(circle at center, #1e3a5f 0%, #0f172a 100%)",
-      minHeight: "100vh",
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-      padding: "24px"
+      background: "radial-gradient(circle at center, #1e3a5f 0%, #0f172a 100%)",
+      minHeight: "100vh", display: "flex", alignItems: "center",
+      justifyContent: "center", padding: "24px"
     }}>
       <button onClick={onBack} style={{
-        position: "fixed", top: "24px", left: "24px",
-        background: "none", border: "none", cursor: "pointer",
-        color: "rgba(255,255,255,0.6)", display: "flex", alignItems: "center", gap: "8px"
+        position: "fixed", top: "24px", left: "24px", background: "none",
+        border: "none", cursor: "pointer", color: "rgba(255,255,255,0.6)",
+        display: "flex", alignItems: "center", gap: "8px"
       }}>
         <ArrowLeft size={20} />
         <span style={{ fontSize: "14px" }}>Retour</span>
       </button>
 
       <div style={{ width: "100%", maxWidth: isRegistering ? "640px" : "448px" }}>
-        {/* Logo */}
         <div style={{ textAlign: "center", marginBottom: "32px" }}>
           <div style={{
             width: "64px", height: "64px", background: "rgba(99,102,241,0.15)",
@@ -115,14 +94,13 @@ export default function Loginprof({ onBack, onLogin }) {
           </p>
         </div>
 
-        {/* Formulaire Connexion */}
+        {/* ========== CONNEXION ========== */}
         {!isRegistering && (
           <div style={{
             background: "rgba(255, 255, 255, 0.05)", backdropFilter: "blur(20px)",
             border: "1px solid rgba(255, 255, 255, 0.1)", borderRadius: "24px", padding: "40px"
           }}>
             <h2 style={{ fontSize: "20px", fontWeight: "600", color: "white", marginBottom: "24px" }}>Connectez-vous</h2>
-
             <form onSubmit={handleLogin}>
               <div style={{ marginBottom: "20px" }}>
                 <label style={{ display: "block", fontSize: "12px", fontWeight: "bold", color: "rgba(255,255,255,0.8)", textTransform: "uppercase", marginBottom: "8px" }}>Email</label>
@@ -130,7 +108,6 @@ export default function Loginprof({ onBack, onLogin }) {
                   placeholder="prof@unigest.com"
                   style={{ width: "100%", padding: "14px 16px", background: "rgba(255, 255, 255, 0.05)", border: "1px solid rgba(255, 255, 255, 0.15)", borderRadius: "12px", color: "white", fontSize: "14px", outline: "none", boxSizing: "border-box" }} />
               </div>
-
               <div style={{ marginBottom: "20px" }}>
                 <label style={{ display: "block", fontSize: "12px", fontWeight: "bold", color: "rgba(255,255,255,0.8)", textTransform: "uppercase", marginBottom: "8px" }}>Mot de passe</label>
                 <div style={{ position: "relative" }}>
@@ -143,17 +120,14 @@ export default function Loginprof({ onBack, onLogin }) {
                   </button>
                 </div>
               </div>
-
               {error && (
                 <div style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.3)", borderRadius: "12px", padding: "12px 16px", color: "#fca5a5", fontSize: "13px", marginBottom: "20px" }}>{error}</div>
               )}
-
               <button type="submit" disabled={loading}
                 style={{ width: "100%", padding: "14px", background: loading ? "rgba(99,102,241,0.5)" : "#6366f1", color: "white", fontWeight: "600", fontSize: "15px", border: "none", borderRadius: "12px", cursor: loading ? "not-allowed" : "pointer" }}>
                 {loading ? "Connexion..." : "Se connecter"}
               </button>
             </form>
-
             <div style={{ marginTop: "24px", textAlign: "center" }}>
               <p style={{ color: "rgba(255,255,255,0.5)", fontSize: "13px" }}>
                 Pas encore de compte ?{' '}
@@ -163,14 +137,13 @@ export default function Loginprof({ onBack, onLogin }) {
                 </button>
               </p>
             </div>
-
             <div style={{ marginTop: "24px", padding: "16px", background: "rgba(99,102,241,0.05)", border: "1px solid rgba(99,102,241,0.15)", borderRadius: "12px", fontSize: "12px", color: "rgba(255,255,255,0.5)", textAlign: "center" }}>
               prof@unigest.com / prof123
             </div>
           </div>
         )}
 
-        {/* Formulaire Inscription */}
+        {/* ========== INSCRIPTION ========== */}
         {isRegistering && (
           <div style={{
             background: "rgba(255, 255, 255, 0.05)", backdropFilter: "blur(20px)",
@@ -179,11 +152,60 @@ export default function Loginprof({ onBack, onLogin }) {
             <h2 style={{ fontSize: "20px", fontWeight: "600", color: "white", marginBottom: "24px" }}>Créer un compte</h2>
 
             {success ? (
-              <div style={{ textAlign: "center", padding: "40px 0" }}>
-                <CheckCircle size={48} color="#34d399" style={{ margin: "0 auto 16px" }} />
-                <p style={{ color: "#34d399", fontSize: "16px", fontWeight: "600" }}>{success}</p>
+              /* ========== PAGE DE SUCCÈS ========== */
+              <div style={{ textAlign: "center", padding: "20px 0" }}>
+                <div style={{
+                  width: "80px", height: "80px", background: "rgba(52, 211, 153, 0.1)",
+                  borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center",
+                  margin: "0 auto 20px", border: "2px solid rgba(52, 211, 153, 0.3)"
+                }}>
+                  <CheckCircle size={48} color="#34d399" />
+                </div>
+                <h3 style={{ color: "#34d399", fontSize: "20px", fontWeight: "700", marginBottom: "12px" }}>
+                  Demande soumise avec succès !
+                </h3>
+                <p style={{ color: "rgba(255,255,255,0.7)", fontSize: "14px", marginBottom: "8px", lineHeight: "1.6" }}>
+                  Votre compte est en cours de vérification par l'administration.
+                </p>
+
+                <div style={{ background: "rgba(255,255,255,0.05)", borderRadius: "16px", padding: "20px", marginTop: "24px", textAlign: "left" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "16px" }}>
+                    <div style={{ width: "28px", height: "28px", borderRadius: "50%", background: "#34d399", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "14px", fontWeight: "bold", color: "white" }}>✓</div>
+                    <div>
+                      <p style={{ color: "white", fontSize: "13px", fontWeight: "600" }}>Inscription complétée</p>
+                      <p style={{ color: "rgba(255,255,255,0.5)", fontSize: "11px" }}>Vos informations ont été enregistrées</p>
+                    </div>
+                  </div>
+                  <div style={{ width: "2px", height: "20px", background: "rgba(255,255,255,0.1)", marginLeft: "13px", marginBottom: "4px" }}></div>
+                  <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "16px" }}>
+                    <div style={{ width: "28px", height: "28px", borderRadius: "50%", background: "rgba(251, 191, 36, 0.3)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "14px", fontWeight: "bold", color: "#fbbf24" }}>⏳</div>
+                    <div>
+                      <p style={{ color: "white", fontSize: "13px", fontWeight: "600" }}>Vérification en cours</p>
+                      <p style={{ color: "rgba(255,255,255,0.5)", fontSize: "11px" }}>L'administration vérifie votre pièce d'identité</p>
+                    </div>
+                  </div>
+                  <div style={{ width: "2px", height: "20px", background: "rgba(255,255,255,0.1)", marginLeft: "13px", marginBottom: "4px" }}></div>
+                  <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                    <div style={{ width: "28px", height: "28px", borderRadius: "50%", background: "rgba(255,255,255,0.1)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "14px", color: "rgba(255,255,255,0.3)" }}>🔓</div>
+                    <div>
+                      <p style={{ color: "rgba(255,255,255,0.5)", fontSize: "13px", fontWeight: "600" }}>Accès à l'espace professeur</p>
+                      <p style={{ color: "rgba(255,255,255,0.3)", fontSize: "11px" }}>Vous recevrez un email de confirmation</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div style={{ marginTop: "24px", padding: "16px", background: "rgba(99,102,241,0.08)", border: "1px solid rgba(99,102,241,0.2)", borderRadius: "12px", textAlign: "center" }}>
+                  <p style={{ color: "rgba(255,255,255,0.6)", fontSize: "12px", marginBottom: "4px" }}>Besoin d'aide ? Contactez le service scolarité</p>
+                  <p style={{ color: "#818cf8", fontSize: "13px", fontWeight: "600" }}>scolarite@emitgest.mg</p>
+                </div>
+
+                <button onClick={() => { setIsRegistering(false); setSuccess(''); }}
+                  style={{ marginTop: "24px", padding: "12px 32px", background: "rgba(255,255,255,0.1)", border: "1px solid rgba(255,255,255,0.2)", borderRadius: "12px", color: "white", fontSize: "14px", fontWeight: "600", cursor: "pointer" }}>
+                  Retour à la connexion
+                </button>
               </div>
             ) : (
+              /* ========== FORMULAIRE INSCRIPTION ========== */
               <form onSubmit={handleRegister}>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", marginBottom: "16px" }}>
                   <div>
@@ -197,19 +219,16 @@ export default function Loginprof({ onBack, onLogin }) {
                       style={{ width: "100%", padding: "14px 16px", background: "rgba(255, 255, 255, 0.05)", border: "1px solid rgba(255, 255, 255, 0.15)", borderRadius: "12px", color: "white", fontSize: "14px", outline: "none", boxSizing: "border-box" }} />
                   </div>
                 </div>
-
                 <div style={{ marginBottom: "16px" }}>
                   <label style={{ display: "block", fontSize: "12px", fontWeight: "bold", color: "rgba(255,255,255,0.8)", textTransform: "uppercase", marginBottom: "8px" }}>Email</label>
                   <input type="email" required value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })}
                     style={{ width: "100%", padding: "14px 16px", background: "rgba(255, 255, 255, 0.05)", border: "1px solid rgba(255, 255, 255, 0.15)", borderRadius: "12px", color: "white", fontSize: "14px", outline: "none", boxSizing: "border-box" }} />
                 </div>
-
                 <div style={{ marginBottom: "16px" }}>
                   <label style={{ display: "block", fontSize: "12px", fontWeight: "bold", color: "rgba(255,255,255,0.8)", textTransform: "uppercase", marginBottom: "8px" }}>Téléphone</label>
                   <input type="text" required value={form.telephone} onChange={(e) => setForm({ ...form, telephone: e.target.value })}
                     style={{ width: "100%", padding: "14px 16px", background: "rgba(255, 255, 255, 0.05)", border: "1px solid rgba(255, 255, 255, 0.15)", borderRadius: "12px", color: "white", fontSize: "14px", outline: "none", boxSizing: "border-box" }} />
                 </div>
-
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", marginBottom: "16px" }}>
                   <div>
                     <label style={{ display: "block", fontSize: "12px", fontWeight: "bold", color: "rgba(255,255,255,0.8)", textTransform: "uppercase", marginBottom: "8px" }}>Spécialité</label>
@@ -222,7 +241,6 @@ export default function Loginprof({ onBack, onLogin }) {
                       style={{ width: "100%", padding: "14px 16px", background: "rgba(255, 255, 255, 0.05)", border: "1px solid rgba(255, 255, 255, 0.15)", borderRadius: "12px", color: "white", fontSize: "14px", outline: "none", boxSizing: "border-box" }} />
                   </div>
                 </div>
-
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", marginBottom: "16px" }}>
                   <div>
                     <label style={{ display: "block", fontSize: "12px", fontWeight: "bold", color: "rgba(255,255,255,0.8)", textTransform: "uppercase", marginBottom: "8px" }}>Mot de passe</label>
@@ -247,31 +265,22 @@ export default function Loginprof({ onBack, onLogin }) {
                     </div>
                   </div>
                 </div>
-
-                {/* Upload fichier */}
                 <div style={{ marginBottom: "16px" }}>
                   <label style={{ display: "block", fontSize: "12px", fontWeight: "bold", color: "rgba(255,255,255,0.8)", textTransform: "uppercase", marginBottom: "8px" }}>
                     <Upload size={14} style={{ display: "inline", marginRight: "6px" }} />
                     Pièce d'identité (PDF ou image)
                   </label>
-                  <label style={{
-                    display: "flex", alignItems: "center", gap: "12px",
-                    padding: "16px", background: "rgba(255, 255, 255, 0.05)",
-                    border: `2px dashed ${fileName ? 'rgba(52, 211, 153, 0.5)' : 'rgba(255, 255, 255, 0.15)'}`,
-                    borderRadius: "12px", cursor: "pointer"
-                  }}>
+                  <label style={{ display: "flex", alignItems: "center", gap: "12px", padding: "16px", background: "rgba(255, 255, 255, 0.05)", border: `2px dashed ${fileName ? 'rgba(52, 211, 153, 0.5)' : 'rgba(255, 255, 255, 0.15)'}`, borderRadius: "12px", cursor: "pointer" }}>
                     <FileText size={20} color={fileName ? "#34d399" : "rgba(255,255,255,0.4)"} />
                     <span style={{ color: fileName ? "#34d399" : "rgba(255,255,255,0.5)", fontSize: "13px" }}>
-                      {fileName || 'Cliquez pour télécharger votre pièce d\'identité'}
+                      {fileName || "Cliquez pour télécharger votre pièce d'identité"}
                     </span>
                     <input type="file" accept=".pdf,.jpg,.jpeg,.png" onChange={handleFileChange} style={{ display: "none" }} />
                   </label>
                 </div>
-
                 {error && (
                   <div style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.3)", borderRadius: "12px", padding: "12px 16px", color: "#fca5a5", fontSize: "13px", marginBottom: "16px" }}>{error}</div>
                 )}
-
                 <button type="submit" disabled={loading}
                   style={{ width: "100%", padding: "14px", background: loading ? "rgba(99,102,241,0.5)" : "#6366f1", color: "white", fontWeight: "600", fontSize: "15px", border: "none", borderRadius: "12px", cursor: loading ? "not-allowed" : "pointer" }}>
                   {loading ? "Création..." : "Créer mon compte"}
